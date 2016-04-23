@@ -21,8 +21,18 @@ class Game(object):
             print ' '.join(row)
         print ''
 
-    def update():
-        pass
+    def move_in_bounds(self, coordinates):
+        for coord in coordinates:
+            if coord < 0 or coord >= self.board_size:
+                return False
+        return True
+
+    def move_free_spot(self, coordinates):
+        row = coordinates[0]
+        col = coordinates[1]
+        return self.state[row][col] == '.'
+
+
 
 if __name__ == '__main__':
     g = Game(12)
