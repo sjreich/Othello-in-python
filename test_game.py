@@ -23,7 +23,8 @@ class GameTest(unittest.TestCase):
                           ['.','O','X','.'],
                           ['O','X','O','.']]
         game.state = initial_state
-        game.update_for_move(0, 2, 'X')
+        game.symbol = 'X'
+        game.update_for_move(0, 2)
         expected_state = [['.','.','X','.'],
                           ['.','X','X','.'],
                           ['.','O','X','.'],
