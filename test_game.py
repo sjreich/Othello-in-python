@@ -16,19 +16,47 @@ class GameTest(unittest.TestCase):
 
         self.assertTrue('Number of rows must be even' in context.exception)
 
-    def test_update_with_move(self):
+    def test_update_with_move_flip(self):
         game = Game(4)
         initial_state =  [['.','.','.','.'],
-                          ['.','X','O','.'],
-                          ['.','O','X','.'],
-                          ['O','X','O','.']]
+                          ['.','.','O','.'],
+                          ['.','.','X','.'],
+                          ['.','.','.','.']]
         game.state = initial_state
-        game.symbol = 'X'
         game.update_for_move(0, 2)
         expected_state = [['.','.','X','.'],
-                          ['.','X','X','.'],
-                          ['.','O','X','.'],
-                          ['O','X','O','.']]
+                          ['.','.','X','.'],
+                          ['.','.','X','.'],
+                          ['.','.','.','.']]                   
+        self.assertEqual(game.state, expected_state)
+
+
+    def test_update_with_move_next_to_same_color(self):
+        game = Game(4)
+        initial_state =  [['.','.','.','.'],
+                          ['.','.','X','.'],
+                          ['.','.','O','.'],
+                          ['.','.','O','.']]
+        game.state = initial_state
+        game.update_for_move(0, 2)
+        expected_state = [['.','.','.','.'],
+                          ['.','.','X','.'],
+                          ['.','.','O','.'],
+                          ['.','.','O','.']]
+        self.assertEqual(game.state, expected_state)
+
+    def test_update_with_move_runs_into_edge(self):
+        game = Game(4)
+        initial_state =  [['.','.','.','.'],
+                          ['.','.','O','.'],
+                          ['.','.','O','.'],
+                          ['.','.','O','.']]
+        game.state = initial_state
+        game.update_for_move(0, 2)
+        expected_state = [['.','.','.','.'],
+                          ['.','.','O','.'],
+                          ['.','.','O','.'],
+                          ['.','.','O','.']]
         self.assertEqual(game.state, expected_state)
 
     def test_move_out_of_bounds(self):
@@ -41,15 +69,15 @@ class GameTest(unittest.TestCase):
         for move in out_of_bounds_moves:
             self.assertTrue(game.move_out_of_bounds(move[0], move[1]))
 
-    def test_move_spot_taken(self):
+    def test_move_spot_empty(self):
         game = Game(4)
         free_spaces = [[0,0], [0,1], [1,0], [3,3]]
         for move in free_spaces:
-            self.assertFalse(game.move_spot_taken(move[0], move[1]))
+            self.assertTrue(game.move_spot_empty(move[0], move[1]))
 
         taken_spaces = [[1,1], [1,2], [2,1], [1,1]]
         for move in taken_spaces:
-            self.assertTrue(game.move_spot_taken(move[0], move[1]))
+            self.assertFalse(game.move_spot_empty(move[0], move[1]))
 
 
 if __name__ == '__main__':

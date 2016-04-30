@@ -19,10 +19,8 @@ class Game(object):
 
             if self.move_out_of_bounds(row, col):
                 print "That's out of bounds.  Try Again."
-                continue
-            elif self.move_spot_taken(row, col):
+            elif not self.move_spot_empty(row, col):
                 print "That space already has a piece on it.  Try again."
-                continue
             elif self.update_for_move(row, col):
                 self.display()
                 # check for game end
@@ -52,30 +50,34 @@ class Game(object):
 
     def update_for_move(self, row, col):
         something_was_flipped = False
+
         for row_delta in [-1, 0, 1]:
             for col_delta in [-1, 0, 1]:
                 if self.adjust_pieces(row, col, row_delta, col_delta):
                     something_was_flipped = True
+
         return something_was_flipped
 
     def adjust_pieces(self, row, col, row_delta, col_delta):
         next_row = row + row_delta
         next_col = col + col_delta
+        prev_row = row - row_delta
+        prev_col = col - col_delta
 
-        if self.state[next_row][next_col] == '.': 
-            return False
-        if self.move_out_of_bounds(next_row, next_col): 
+        if self.state[row][col] == self.symbol:
+            return not self.move_spot_empty(prev_row, prev_col)
+
+        if self.move_out_of_bounds(next_row, next_col):
             return False
 
-        if self.state[next_row][next_col] == self.symbol:
-            self.state[row][col] = self.symbol
-            return True
+        if self.move_spot_empty(next_row, next_col):
+            return False
 
         if self.adjust_pieces(next_row, next_col, row_delta, col_delta):
             self.state[row][col] = self.symbol
             return True
-        else:
-            return False
+
+        return False
 
     def move_out_of_bounds(self, row, col):
         for coord in [row, col]:
@@ -83,11 +85,10 @@ class Game(object):
                 return True
         return False
 
-    def move_spot_taken(self, row, col):
-        return self.state[row][col] != '.'
-
+    def move_spot_empty(self, row, col):
+        return self.state[row][col] == '.'
 
 
 if __name__ == '__main__':
-    Game(12).run()
+    Game(4).run()
 
