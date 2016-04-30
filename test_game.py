@@ -23,12 +23,11 @@ class GameTest(unittest.TestCase):
                           ['.','O','X','.'],
                           ['O','X','O','.']]
         game.state = initial_state
-        coordinates = [0,2]
+        game.update_for_move(0, 2, 'X')
         expected_state = [['.','.','X','.'],
                           ['.','X','X','.'],
                           ['.','O','X','.'],
                           ['O','X','O','.']]
-        game.update_with_move(coordinates, 'X')
         self.assertEqual(game.state, expected_state)
 
     def test_move_out_of_bounds(self):
@@ -41,15 +40,15 @@ class GameTest(unittest.TestCase):
         for move in out_of_bounds_moves:
             self.assertTrue(game.move_out_of_bounds(move[0], move[1]))
 
-    def test_move_free_spot(self):
+    def test_move_spot_taken(self):
         game = Game(4)
         free_spaces = [[0,0], [0,1], [1,0], [3,3]]
         for move in free_spaces:
-            self.assertTrue(game.move_free_spot(move))
+            self.assertFalse(game.move_spot_taken(move[0], move[1]))
 
         taken_spaces = [[1,1], [1,2], [2,1], [1,1]]
         for move in taken_spaces:
-            self.assertFalse(game.move_free_spot(move))
+            self.assertTrue(game.move_spot_taken(move[0], move[1]))
 
 
 if __name__ == '__main__':
