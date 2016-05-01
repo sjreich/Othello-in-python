@@ -64,11 +64,12 @@ class Game(object):
         prev_row = row - row_delta
         prev_col = col - col_delta
 
-        if self.state[row][col] == self.symbol:
-            return not self.move_spot_empty(prev_row, prev_col)
-
         if self.move_out_of_bounds(next_row, next_col):
             return False
+
+        if self.state[row][col] == self.symbol:
+            if not self.move_out_of_bounds(prev_row, prev_col):
+                return not self.move_spot_empty(prev_row, prev_col)
 
         if self.move_spot_empty(next_row, next_col):
             return False
