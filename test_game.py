@@ -23,11 +23,25 @@ class GameTest(unittest.TestCase):
                           ['.','.','X','.'],
                           ['.','.','.','.']]
         game.state = initial_state
-        game.update_for_move(0, 2)
+        self.assertTrue(game.update_for_move(0, 2, 'X'))
         expected_state = [['.','.','X','.'],
                           ['.','.','X','.'],
                           ['.','.','X','.'],
                           ['.','.','.','.']]                   
+        self.assertEqual(game.state, expected_state)
+
+    def test_update_where_matching_ends_at_edge_of_board(self):
+        game = Game(4)
+        initial_state = [['.','O','O','O'],
+                         ['.','X','X','O'],
+                         ['X','X','X','O'],
+                         ['.','.','.','.']]
+        game.state = initial_state
+        self.assertTrue(game.update_for_move(1, 0, 'O'))
+        expected_state = [['.','O','O','O'],
+                          ['O','O','O','O'],
+                          ['X','X','X','O'],
+                          ['.','.','.','.']]                  
         self.assertEqual(game.state, expected_state)
 
 
@@ -38,7 +52,7 @@ class GameTest(unittest.TestCase):
                           ['.','.','O','.'],
                           ['.','.','O','.']]
         game.state = initial_state
-        game.update_for_move(0, 2)
+        self.assertFalse(game.update_for_move(0, 2, 'X'))
         expected_state = [['.','.','.','.'],
                           ['.','.','X','.'],
                           ['.','.','O','.'],
@@ -52,7 +66,7 @@ class GameTest(unittest.TestCase):
                           ['.','.','O','.'],
                           ['.','.','O','.']]
         game.state = initial_state
-        game.update_for_move(0, 2)
+        self.assertFalse(game.update_for_move(0, 2, 'X'))
         expected_state = [['.','.','.','.'],
                           ['.','.','O','.'],
                           ['.','.','O','.'],
@@ -78,6 +92,27 @@ class GameTest(unittest.TestCase):
         taken_spaces = [[1,1], [1,2], [2,1], [1,1]]
         for move in taken_spaces:
             self.assertFalse(game.move_spot_empty(move[0], move[1]))
+
+    def test_game_is_finished_board_full(self):
+        game = Game(4)
+        game.state = [['O','O','O','O'],
+                      ['O','O','O','O'],
+                      ['O','O','O','O'],
+                      ['O','O','O','O']]
+        self.assertTrue(game.game_is_finished())
+
+    def test_game_is_finished_game_at_start(self):
+        game = Game(4)
+        self.assertFalse(game.game_is_finished())
+
+    def test_side_has_a_valid_move(self):
+        game = Game(4)
+        game.state = [['.','O','O','O'],
+                      ['.','X','X','O'],
+                      ['X','X','X','O'],
+                      ['.','.','.','.']]
+        self.assertFalse(game.side_has_a_valid_move('X'))
+        self.assertTrue(game.side_has_a_valid_move('O'))
 
 
 if __name__ == '__main__':
