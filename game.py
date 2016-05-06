@@ -13,6 +13,7 @@ class Game(object):
     def run(self):
         self.display()
         while not self.game_is_finished():
+            print "It's {}'s turn.".format(self.symbol)
             row = int(raw_input("Which row? ")) - 1
             col = int(raw_input("Which column? ")) - 1
 
@@ -24,6 +25,8 @@ class Game(object):
                 self.display()
                 if self.side_has_a_valid_move(self.opposite_symbol()):
                     self.symbol = self.opposite_symbol()
+                elif self.side_has_a_valid_move(self.symbol):
+                    print "{}'s can't play.".format(self.opposite_symbol())
             else:
                 print "You have to flip at least one piece on your turn.  Try again."
         print "Game Over!!!"
