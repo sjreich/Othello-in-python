@@ -29,7 +29,11 @@ class Game(object):
                     print "{}'s can't play.".format(self.opposite_symbol())
             else:
                 print "You have to flip at least one piece on your turn.  Try again."
-        print "Game Over!!!"
+        print "Game Over."
+        if self.winner == 'tie':
+            print "Its a tie!"
+        else:
+            print "{}'s win!".format(self.winner())
 
     def set_up_starting_moves(self):
         middle = self.board_size / 2
@@ -100,6 +104,23 @@ class Game(object):
                 if self.state[row][col] == '.' and self.update_for_move(row, col, side, False):
                     return True
         return False
+
+    def number_of_pieces_for(self, side):
+        pieces_on_board = []
+        for row in self.state:
+            for piece in row:
+                pieces_on_board.append(piece)
+        return len(filter(lambda piece: piece == side, pieces_on_board))
+
+    def winner(self):
+        if not self.game_is_finished():
+            raise Exception('Cannot determine a winner before the game is finished')
+        if self.number_of_pieces_for('X') > self.number_of_pieces_for('O'):
+            return 'X'
+        elif self.number_of_pieces_for('X') < self.number_of_pieces_for('O'):
+            return 'O'
+        else:
+            return "tie"
 
 
 if __name__ == '__main__':

@@ -114,6 +114,39 @@ class GameTest(unittest.TestCase):
         self.assertFalse(game.side_has_a_valid_move('X'))
         self.assertTrue(game.side_has_a_valid_move('O'))
 
+    def test_number_of_pieces_for(self):
+        game = Game(4)
+        game.state = [['O','O','O','O'],
+                      ['X','X','X','O'],
+                      ['X','X','X','O'],
+                      ['X','X','X','O']]
+        self.assertEqual(game.number_of_pieces_for('X'), 9)
+        self.assertEqual(game.number_of_pieces_for('O'), 7)
+
+    def test_winner_x(self):
+        game = Game(4)
+        game.state = [['O','O','O','O'],
+                      ['X','X','X','O'],
+                      ['X','X','X','O'],
+                      ['X','X','X','O']]
+        self.assertEqual(game.winner(), 'X')
+
+    def test_winner_tie(self):
+        game = Game(4)
+        game.state = [['O','O','O','O'],
+                      ['X','X','O','O'],
+                      ['X','X','X','O'],
+                      ['X','X','X','O']]
+        self.assertEqual(game.winner(), 'tie')
+
+    def test_winner_o(self):
+        game = Game(4)
+        game.state = [['O','O','O','O'],
+                      ['X','O','O','O'],
+                      ['X','X','X','O'],
+                      ['X','X','X','O']]
+        self.assertEqual(game.winner(), 'O')
+
 
 if __name__ == '__main__':
     unittest.main()
