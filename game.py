@@ -53,7 +53,7 @@ class Game(object):
             print ' '.join(row)
         print ''
 
-    def update_for_move(self, row, col, symbol, live = True):
+    def update_for_move(self, row, col, symbol, live=True):
         something_was_flipped = False
 
         for row_delta in [-1, 0, 1]:
@@ -125,4 +125,3 @@ class Game(object):
 
 if __name__ == '__main__':
     Game(4).run()
-
