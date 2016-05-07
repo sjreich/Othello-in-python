@@ -23,10 +23,10 @@ class Game(object):
                 print "That space already has a piece on it.  Try again."
             elif self.update_for_move(row, col, self.symbol):
                 self.display()
-                if self.side_has_a_valid_move(self.opposite_symbol()):
-                    self.symbol = self.opposite_symbol()
+                if self.side_has_a_valid_move(self.opposite_symbol(self.symbol)):
+                    self.symbol = self.opposite_symbol(self.symbol)
                 elif self.side_has_a_valid_move(self.symbol):
-                    print "{}'s can't play.".format(self.opposite_symbol())
+                    print "{}'s can't play.".format(self.opposite_symbol(self.symbol))
             else:
                 print "You have to flip at least one piece on your turn.  Try again."
         print "Game Over."
@@ -42,8 +42,8 @@ class Game(object):
         self.state[middle][middle - 1] = 'O'
         self.state[middle - 1][middle] = 'O'
 
-    def opposite_symbol(self):
-        if self.symbol == 'X':
+    def opposite_symbol(self, symbol):
+        if symbol == 'X':
             return 'O'
         else:
             return 'X'
@@ -61,17 +61,14 @@ class Game(object):
                 if self.adjust_pieces(row, col, row_delta, col_delta, symbol, live):
                     something_was_flipped = True
 
+        if something_was_flipped:
+            if live:
+                self.state[row][col] = symbol
         return something_was_flipped
 
     def adjust_pieces(self, row, col, row_delta, col_delta, symbol, live):
         next_row = row + row_delta
         next_col = col + col_delta
-        prev_row = row - row_delta
-        prev_col = col - col_delta
-
-        if self.state[row][col] == symbol:
-            if not self.move_out_of_bounds(prev_row, prev_col):
-                return not self.move_spot_empty(prev_row, prev_col)
 
         if self.move_out_of_bounds(next_row, next_col):
             return False
@@ -79,9 +76,12 @@ class Game(object):
         if self.move_spot_empty(next_row, next_col):
             return False
 
+        if self.state[next_row][next_col] == symbol:
+            return self.state[row][col] == self.opposite_symbol(symbol)
+
         if self.adjust_pieces(next_row, next_col, row_delta, col_delta, symbol, live):
             if live:
-                self.state[row][col] = symbol
+                self.state[next_row][next_col] = symbol
             return True
 
         return False
@@ -124,4 +124,4 @@ class Game(object):
 
 
 if __name__ == '__main__':
-    Game(4).run()
+    Game(6).run()

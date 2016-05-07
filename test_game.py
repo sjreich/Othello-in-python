@@ -17,7 +17,7 @@ class GameTest(unittest.TestCase):
 
         self.assertTrue('Number of rows must be even' in context.exception)
 
-    def test_update_with_move_flip(self):
+    def test_update_with_basic_move_flip(self):
         game = Game(4)
         initial_state = [['.', '.', '.', '.'],
                          ['.', '.', 'O', '.'],
@@ -71,6 +71,34 @@ class GameTest(unittest.TestCase):
                           ['.', '.', 'O', '.'],
                           ['.', '.', 'O', '.'],
                           ['.', '.', 'O', '.']]
+        self.assertEqual(game.state, expected_state)
+
+    def test_flip_in_two_directions(self):
+        game = Game(4)
+        initial_state = [['.', '.', '.', '.'],
+                         ['.', '.', 'O', 'X'],
+                         ['.', '.', 'O', 'X'],
+                         ['.', '.', 'O', 'X']]
+        game.state = initial_state
+        self.assertTrue(game.update_for_move(3, 1, 'X'))
+        expected_state = [['.', '.', '.', '.'],
+                          ['.', '.', 'O', 'X'],
+                          ['.', '.', 'X', 'X'],
+                          ['.', 'X', 'X', 'X']]
+        self.assertEqual(game.state, expected_state)
+
+    def test_dont_flip_flippables_farther_down_the_line(self):
+        game = Game(4)
+        initial_state = [['.', '.', '.', '.'],
+                         ['.', '.', '.', '.'],
+                         ['O', 'X', 'O', '.'],
+                         ['.', '.', '.', '.']]
+        game.state = initial_state
+        self.assertFalse(game.update_for_move(2, 3, 'O'))
+        expected_state = [['.', '.', '.', '.'],
+                          ['.', '.', '.', '.'],
+                          ['O', 'X', 'O', '.'],
+                          ['.', '.', '.', '.']]
         self.assertEqual(game.state, expected_state)
 
     def test_move_out_of_bounds(self):
